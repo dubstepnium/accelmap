@@ -15,6 +15,7 @@ public class MainActivity extends Activity {
     // Create a GLSurfaceView instance and set it
     // as the ContentView for this Activity.
     mGLView = findViewById(R.id.surfaceView);
+    mGLView.setEGLContextClientVersion(2);
     mGLView.setRenderer(new MyGLRenderer());
 
   }
