@@ -28,6 +28,8 @@ public class MyGLRenderer implements GLSurfaceView.Renderer {
   public void onSurfaceCreated(GL10 gl10, javax.microedition.khronos.egl.EGLConfig eglConfig) {
     // Set the background frame color
     GLES20.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
+    mTriangle = new Triangle();
   }
 
   @Override
