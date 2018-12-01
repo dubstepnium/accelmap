@@ -10,10 +10,12 @@ public class MainActivity extends Activity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.activity_main);
 
     // Create a GLSurfaceView instance and set it
     // as the ContentView for this Activity.
-    mGLView = new MyGLSurfaceView(this);
-    setContentView(mGLView);
+    mGLView = findViewById(R.id.surfaceView);
+    mGLView.setRenderer(new MyGLRenderer());
+
   }
 }
