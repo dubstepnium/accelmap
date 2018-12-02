@@ -60,11 +60,42 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     sensorManager.unregisterListener(this);
   }
 
+  long lastTime = -1;
+  long secondLastTime = -1;
+
+  double lastV0 = 0;
+  double lastV1 = 0;
+  double lastV2 = 0;
+
+  double lastX0 = 0;
+  double lastX1 = 0;
+  double lastX2 = 0;
+
   @Override
   public void onSensorChanged(SensorEvent event) {
-    values = new String[] {String.valueOf(event.values[0]),
-            String.valueOf(event.values[1]),
-            String.valueOf(event.values[2])};
+    if(lastTime == -1) {
+      lastTime = event.timestamp;
+      return;
+    }
+    double velocity0 = (event.timestamp - lastTime) / 1e9 * event.values[0];
+    double velocity1 = (event.timestamp - lastTime) / 1e9 * event.values[1];
+    double velocity2 = (event.timestamp - lastTime) / 1e9 * event.values[2];
+
+    velocity0 += lastV0;
+    velocity1 += lastV1;
+    velocity2 += lastV2;
+
+    double position0 = (event.timestamp - lastTime) / 1e9 * velocity0;
+    double position1 = (event.timestamp - lastTime) / 1e9 * velocity1;
+    double position2 = (event.timestamp - lastTime) / 1e9 * velocity2;
+
+    position0 += lastX0;
+    position1 += lastX1;
+    position2 += lastX2;
+
+    lastTime = event.timestamp;
+
+    String[] values = new String[]{ String.valueOf(position0), String.valueOf(position1), String.valueOf(position2) };
 
     Bundle bundle = new Bundle();
     bundle.putStringArray("values", values);
@@ -84,8 +115,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
     if(bundle != null && (values = bundle.getStringArray("values")) != null ) {
         urlSend = URL_SEND.concat("?id=" + userId
-                //+ "&time=" + values[0]
-                + "&acceleration=" + values[0]
+                + "&position=" + values[0]
                 + "," + values[1]
                 + "," + values[2]);
         return new DataLoader(this, URL_ID, urlSend, userId);
